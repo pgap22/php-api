@@ -5,26 +5,28 @@
 <?php include "./controllers/CajasChocolateController.php"  ?>
 <?php include "./controllers/AutenticacionController.php"  ?>
 <?php include "./controllers/FeedbackController.php"  ?>
+<?php include "./controllers/FavoritosController.php"  ?>
+
 
 <?php include "./middleware/autenticado.php"  ?>
 <?php include "./middleware/admin.php"  ?>
 
-<?php  
+<?php
 
 
 //Chocolates Routes
 route("GET", "/chocolates", [$obtenerChocolates]);
-route("POST", "/chocolates", [$crearChocolate]);
+route("POST", "/chocolates", [$autenticado, $admin, $crearChocolate]);
 
 route("GET", "/chocolates/:id", [$obtenerChocolate]);
-route("PUT", "/chocolates/:id", [$actualizandoChocolate]);
-route("DELETE", "/chocolates/:id",[$eliminarChocolate]);
+route("PUT", "/chocolates/:id", [$autenticado, $admin, $actualizandoChocolate]);
+route("DELETE", "/chocolates/:id", [$autenticado, $admin, $eliminarChocolate]);
 
 
 //Autenticacion Routes
 route("POST", "/registrar", [$registrarUsuario]);
 route("POST", "/login", [$loginUsuario]);
-route("GET", "/perfil", [$autenticado,$obtenerPerfil]);
+route("GET", "/perfil", [$autenticado, $obtenerPerfil]);
 
 
 //Cajas de chocolates
@@ -36,11 +38,15 @@ route("PUT", "/cajas-chocolate/:id", [$actualizarCajaChocolate]);
 route("DELETE", "/cajas-chocolate/:id", [$eliminarChocolate]);
 
 //Feedback
-route("GET", "/feedback", [$autenticado,$admin,$obtenerFeedback]);
+route("GET", "/feedback", [$autenticado, $admin, $obtenerFeedback]);
 route("POST", "/feedback", [$autenticado, $crearFeedback]);
+
+//Favoritos
+route("GET", "/favoritos", [$autenticado,$obtenerChocolatesFav]);
+route("GET", "/favoritos/:id", [$autenticado,$alternarChocolateFav]);
 
 
 $path = $_SERVER['REQUEST_URI'] ?? '';
-echo "Ruta no encontrada ". $_SERVER['REQUEST_METHOD'] . " " . $path;
+echo "Ruta no encontrada " . $_SERVER['REQUEST_METHOD'] . " " . $path;
 
 ?>
