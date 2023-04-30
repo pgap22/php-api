@@ -3,9 +3,32 @@
 
 $registrarUsuario = function($db,$body){
 
-   $nombre =  $body['nombre'];
-   $email =  $body['email'];
-   $password =  password_hash($body['password'], PASSWORD_DEFAULT);
+   $nombre    =  $body['nombre'] ?? '';
+   $email     =  strtolower($body['email']) ?? '';
+   $telefono  =  $body['telefono'] ?? '';
+   $direccion =  $body['direccion'] ?? '';
+   $token = bin2hex(random_bytes(8));
+   $rol       =  'usuario';
+
+   $password  =  password_hash($body['password'], PASSWORD_DEFAULT);
+
+    //Validar campos vacios
+    if(empty($nombre)){
+        mensaje("El nombre es obligatorio", 400);
+    }
+    if(empty($email)){
+        mensaje("El email es obligatorio", 400);
+    }
+    if(empty($telefono)){
+        mensaje("El telefono es obligatorio", 400);
+    }
+    if(empty($direccion)){
+        mensaje("La direccion es obligatorio", 400);
+    }
+    if(empty($password)){
+        mensaje("El password es obligatorio", 400);
+    }
+
 
     try {
         //Detectar si hay un email ya registrado
@@ -13,15 +36,14 @@ $registrarUsuario = function($db,$body){
         $isEmail = mysqli_fetch_assoc($isEmail);
 
         if($isEmail){
-            http_response_code(400);
-            echo json_encode([
-                "message"=> "Ese correo ya ha sido utilizado"
-            ],JSON_UNESCAPED_UNICODE);
-            return;
+            mensaje("Ese correo ya ha sido utilizado", 400);
         }
 
-
-        $query = "INSERT INTO usuarios (nombre, email,password) VALUES('$nombre', '$email', '$password')";
+        $query = "
+        INSERT INTO usuarios (nombre,email,password,telefono,direccion,rol,token) 
+        
+        VALUES('$nombre', '$email', '$password', '$telefono', '$direccion', '$rol','$token')
+        ";
 
         $result = mysqli_query($db,$query);
 
@@ -34,30 +56,21 @@ $registrarUsuario = function($db,$body){
                 echo json_encode($user,JSON_UNESCAPED_UNICODE);
         }
     } catch (\Throwable $th) {
-        http_response_code(500);
-        echo json_encode([
-            "message" => "Ha ocurrido un error",
-        ]);
+        mensaje("Ha ocurrido un error",500);
     }
 
 
 };
 
 $loginUsuario = function($db,$body){
-    $email = $body['email'];
-    $password = $body['password'];
+    $email = strtolower($body['email']) ?? '';
+    $password = $body['password'] ?? '';
 
     if(!$email){
-        http_response_code(400);
-        echo json_encode([
-            "message" => "Email es obligatorio"
-        ],JSON_UNESCAPED_UNICODE);
+        mensaje("El email es obligatorio", 400);
     }
     if(!$password){
-        http_response_code(400);
-        echo json_encode([
-            "message" => "Email es obligatorio"
-        ],JSON_UNESCAPED_UNICODE);
+        mensaje("La contraseña es obligatoria", 400);
     }
 
     $query = "SELECT * FROM usuarios WHERE email = '$email'";
@@ -65,18 +78,12 @@ $loginUsuario = function($db,$body){
     $user = mysqli_fetch_assoc($user);
 
     if(!$user){
-        http_response_code(401);
-        echo json_encode([
-            "message" => "El usuario o contraseña no es el correcto"
-        ],JSON_UNESCAPED_UNICODE);
+        mensaje("Las credenciales no son correctas", 401);
         return;        
     }
 
     if(!password_verify($password, $user['password'])){
-        http_response_code(401);
-        echo json_encode([
-            "message" => "El usuario o contraseña no es el correcto"
-        ],JSON_UNESCAPED_UNICODE);
+        mensaje("Las credenciales no son correctas", 401);
         return;        
     }
     
@@ -89,7 +96,6 @@ $loginUsuario = function($db,$body){
     $user =  mysqli_query($db, $query);
     $user = mysqli_fetch_assoc($user);
 
-    http_response_code(201);
     echo json_encode($user,JSON_UNESCAPED_UNICODE);
 };
 

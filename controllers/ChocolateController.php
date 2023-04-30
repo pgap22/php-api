@@ -103,15 +103,10 @@ $eliminarChocolate = function ($db, $body, $params) {
     $chocolates = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM $tabla WHERE id = $id"));
 
     if (!empty($chocolates)) {
-        http_response_code(200);
         mysqli_query($db, "DELETE FROM $tabla WHERE id = $id");
-        echo json_encode([
-            "message" => "El Chocolate ha sido eliminado correctamente"
-        ], JSON_UNESCAPED_UNICODE);
+        mensaje("El Chocolate ha sido eliminado correctamente",200);
     } else {
-        echo json_encode([
-            "message" => "Chocolate no encontrado"
-        ], JSON_UNESCAPED_UNICODE);
+        mensaje("El Chocolate no encontrado",400);
     }
 };
 

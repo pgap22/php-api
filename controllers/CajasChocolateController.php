@@ -158,18 +158,23 @@ $crearCajaChocolates = function ($db, $body) {
 };
 
 $actualizarCajaChocolate = function ($db, $body, $params) {
+    
     //Obtener la caja de chocolates
     $cajaSeleccionadaID = $params['id'];
+
     $query = "SELECT * FROM caja WHERE id = $cajaSeleccionadaID";
+
     $cajaSeleccionada = mysqli_query($db, $query);
+
     $cajaSeleccionada = mysqli_fetch_assoc($cajaSeleccionada);
+
 
     //Obtener los datos del json
     $nombreCaja = $body['nombre'] ?? '';
     $chocolatesData = $body['chocolates'] ?? '';
 
-    //Validar los datos
 
+    //Validar los datos
     #Si la caja para actualizar no existe
     if (empty($cajaSeleccionada)) {
         mensaje("La caja de chocolates no existe", 400);
@@ -185,7 +190,6 @@ $actualizarCajaChocolate = function ($db, $body, $params) {
     }
 
     //Sacar el precio de los nuevos chocolates
-
     #Array que nos permite guardar los datos del chocolate
     $misChocolates = [];
 
