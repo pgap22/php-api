@@ -83,6 +83,7 @@ $verCajaChocolate = function ($db, $body, $params) {
 };
 
 $crearCajaChocolates = function ($db, $body) {
+    $usuarioID = $_REQUEST['user']['id'];
     $nombreCaja = $body['nombre'] ?? '';
     $chocolatesCaja = $body['chocolates'] ?? '';
 
@@ -131,7 +132,7 @@ $crearCajaChocolates = function ($db, $body) {
     }
 
     //Crear la caja
-    $queryCrearCaja = "INSERT INTO caja(nombre,precio) VALUES('$nombreCaja', $precioCaja)";
+    $queryCrearCaja = "INSERT INTO caja(nombre,precio,id_usuario) VALUES('$nombreCaja', $precioCaja, $usuarioID)";
 
     //Añadir a la base de datos
     mysqli_query($db, $queryCrearCaja);
@@ -270,4 +271,46 @@ $eliminarChocolate = function ($db, $body, $params) {
     } else {
         mensaje("La caja de chocolates no ha sido encontrada", 404);
     }
+};
+
+$obtenerMisCajasChocolates = function($db,$body){
+    $usuarioID = $_REQUEST['user']['id'];
+
+    //Obtener cajas
+    $query = "SELECT * FROM caja WHERE id_usuario = $usuarioID";
+
+    $cajasChocolates = mysqli_fetch_all(mysqli_query($db, $query), MYSQLI_ASSOC);
+
+    //Obtener chocolates de las cajas
+    $misCajasChocolates = [];
+
+    foreach ($cajasChocolates as $caja) {
+        $miCaja = $caja;
+
+        //Obtener chocolate por caja
+        $cajaId = $caja['id'];
+
+        $query = "SELECT * FROM cajachocolates WHERE id_caja = $cajaId";
+
+        $chocolatesIDs = mysqli_fetch_all(mysqli_query($db, $query), MYSQLI_ASSOC);
+
+        //Obtener los datos de todos los chocolates de la caja
+        foreach ($chocolatesIDs as $chocolate) {
+
+            //Obtener chocolate por caja
+            $chocolateID = $chocolate['id_chocolate'];
+
+            $query = "SELECT * FROM chocolate WHERE id = $chocolateID";
+
+            $chocolateDatos = mysqli_fetch_assoc(mysqli_query($db, $query));
+
+            $miCaja['chocolates'][] = [
+                ...$chocolateDatos,
+                "cantidad" => $chocolate['cantidad'],
+            ];
+        }
+
+        $misCajasChocolates[] = $miCaja;
+    };
+
 };

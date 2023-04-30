@@ -31,11 +31,12 @@ route("GET", "/perfil", [$autenticado, $obtenerPerfil]);
 
 //Cajas de chocolates
 route("GET", "/cajas-chocolate", [$obtenerCajasChocolates]);
-route("POST", "/cajas-chocolate", [$crearCajaChocolates]);
+route("GET", "/cajas-chocolate/miscajas", [$autenticado,$obtenerMisCajasChocolates]);
+route("POST", "/cajas-chocolate", [$autenticado,$crearCajaChocolates]);
 
 route("GET", "/cajas-chocolate/:id", [$verCajaChocolate]);
-route("PUT", "/cajas-chocolate/:id", [$actualizarCajaChocolate]);
-route("DELETE", "/cajas-chocolate/:id", [$eliminarChocolate]);
+route("PUT", "/cajas-chocolate/:id", [$autenticado, $actualizarCajaChocolate]);
+route("DELETE", "/cajas-chocolate/:id", [$autenticado, $eliminarChocolate]);
 
 //Feedback
 route("GET", "/feedback", [$autenticado, $admin, $obtenerFeedback]);

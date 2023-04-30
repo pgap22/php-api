@@ -5,9 +5,6 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
 -- Schema ecommerce
 -- -----------------------------------------------------
 
@@ -18,13 +15,37 @@ CREATE SCHEMA IF NOT EXISTS `ecommerce` DEFAULT CHARACTER SET utf8 ;
 USE `ecommerce` ;
 
 -- -----------------------------------------------------
+-- Table `ecommerce`.`usuarios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ecommerce`.`usuarios` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(101) NOT NULL,
+  `email` VARCHAR(101) NOT NULL,
+  `password` VARCHAR(100) NOT NULL,
+  `rol` VARCHAR(45) NOT NULL,
+  `token` VARCHAR(100) NULL DEFAULT NULL,
+  `direccion` VARCHAR(110) NOT NULL,
+  `telefono` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
 -- Table `ecommerce`.`caja`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ecommerce`.`caja` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(100) NOT NULL,
   `precio` FLOAT(10,2) NOT NULL,
-  PRIMARY KEY (`id`))
+  `id_usuario` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_caja_idusuario_idx` (`id_usuario` ASC),
+  CONSTRAINT `fk_caja_idusuario`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `ecommerce`.`usuarios` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8;
@@ -68,23 +89,6 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`cajachocolates` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 8
-DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
--- Table `ecommerce`.`usuarios`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ecommerce`.`usuarios` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `nombre` VARCHAR(101) NOT NULL,
-  `email` VARCHAR(101) NOT NULL,
-  `password` VARCHAR(100) NOT NULL,
-  `rol` VARCHAR(45) NOT NULL,
-  `token` VARCHAR(100) NULL DEFAULT NULL,
-  `direccion` VARCHAR(110) NOT NULL,
-  `telefono` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
 
