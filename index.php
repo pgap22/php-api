@@ -28,7 +28,7 @@ route("GET", "/perfil", [$autenticado,$obtenerPerfil]);
 //Cajas de chocolates
 route("GET", "/cajas-chocolate", [$obtenerCajasChocolates]);
 route("POST", "/cajas-chocolate", [$crearCajaChocolates]);
-//TODO solo falta el actualizar caja de chocolates
+route("PUT", "/cajas-chocolate/:id", [$actualizarCajaChocolate]);
 route("GET", "/cajas-chocolate/:id", [$verCajaChocolate]);
 route("DELETE", "/cajas-chocolate/:id", [$eliminarChocolate]);
 

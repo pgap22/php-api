@@ -50,7 +50,7 @@ $verCajaChocolate = function ($db, $body, $params) {
 
     $caja = mysqli_fetch_assoc(mysqli_query($db, $query));
 
-    if(empty($caja)){
+    if (empty($caja)) {
         mensaje("No se ha encotrado esa caja", 404);
     }
 
@@ -83,12 +83,12 @@ $verCajaChocolate = function ($db, $body, $params) {
 };
 
 $crearCajaChocolates = function ($db, $body) {
-    $nombreCaja = $body['nombre'];
-    $chocolatesCaja = $body['chocolates'];
+    $nombreCaja = $body['nombre'] ?? '';
+    $chocolatesCaja = $body['chocolates'] ?? '';
 
     //Validar si existen los datos
     if (empty($nombreCaja)) {
-        mensaje("Debes agregar al menos un chocolate", 400);
+        mensaje("Agrega un nombre a la caja de chocolates", 400);
     }
 
     if (empty($chocolatesCaja)) {
@@ -124,7 +124,10 @@ $crearCajaChocolates = function ($db, $body) {
     $precioCaja = 0;
 
     foreach ($misChocolates as $chocolate) {
-        $precioCaja += floatval($chocolate['precio'] * $chocolate['cantidad']);
+        $precioChocolate = floatval($chocolate['precio']);
+        $cantidadChocolate = intval($chocolate['cantidad']);
+
+        $precioCaja = floatval($precioChocolate*$cantidadChocolate);
     }
 
     //Crear la caja
@@ -151,20 +154,108 @@ $crearCajaChocolates = function ($db, $body) {
         mysqli_query($db, $query);
     }
 
-    echo json_encode(
-        [
-            ...$cajaCreada,
-            "chocolates" => $misChocolates
-        ],
-        JSON_UNESCAPED_UNICODE
-    );
+    echo json_encode([...$cajaCreada, "chocolates" => $misChocolates], JSON_UNESCAPED_UNICODE);
 };
 
 $actualizarCajaChocolate = function ($db, $body, $params) {
+    //Obtener la caja de chocolates
+    $cajaSeleccionadaID = $params['id'];
+    $query = "SELECT * FROM caja WHERE id = $cajaSeleccionadaID";
+    $cajaSeleccionada = mysqli_query($db, $query);
+    $cajaSeleccionada = mysqli_fetch_assoc($cajaSeleccionada);
 
+    //Obtener los datos del json
+    $nombreCaja = $body['nombre'] ?? '';
+    $chocolatesData = $body['chocolates'] ?? '';
+
+    //Validar los datos
+
+    #Si la caja para actualizar no existe
+    if (empty($cajaSeleccionada)) {
+        mensaje("La caja de chocolates no existe", 400);
+    }
+
+    #Si los datos del json estan vacios
+    if (empty($nombreCaja)) {
+        mensaje("El nombre es obligatorio", 400);
+    }
+
+    if (empty($chocolatesData)) {
+        mensaje("Los chocolates son obligatorios", 400);
+    }
+
+    //Sacar el precio de los nuevos chocolates
+
+    #Array que nos permite guardar los datos del chocolate
+    $misChocolates = [];
+
+    #Obtener los datos por cada chocolate
+    foreach ($chocolatesData as $chocolate) {
+        $chocolateID = $chocolate['id'];
+        $query = "SELECT * FROM chocolate WHERE id = $chocolateID";
+        $chocolateDatos = mysqli_query($db, $query);
+        $chocolateDatos = mysqli_fetch_assoc($chocolateDatos);
+
+        #Añadir el campo de cantidad si existe el chocolate en la bd
+        #Si la cantidad es 0, omitir tambien
+        if (!empty($chocolateDatos) & intval($chocolate['cantidad']) !== 0) {
+            $chocolateDatos['cantidad'] = $chocolate['cantidad'];
+
+            $misChocolates[] = $chocolateDatos;
+        }
+    }
+
+    #Si no hay chocolates en la obtencio de datos
+    if(empty($misChocolates)){
+        mensaje("Añade un chocolate valido", 400);
+    }
+
+    #Por cada chocolate sumar su precio
+    $precio = 0;
+    foreach($misChocolates as $chocolate){
+        $precioChocolate = floatval($chocolate['precio']);
+        $cantidadChocolate = intval($chocolate['cantidad']);
+        
+        $precio += floatval($precioChocolate*$cantidadChocolate);
+    }    
+
+    //Actualizar la caja en la base de datos
+    $query = "
+    UPDATE caja
+    
+    SET nombre = '$nombreCaja',
+    precio = $precio
+
+    WHERE id = $cajaSeleccionadaID
+    ";
+
+    mysqli_query($db,$query);
+    
+    //Borrar los chocolates antiguos
+    $query = "DELETE FROM caja WHERE id_caja = $cajaSeleccionadaID";
+
+    //Insertar los nuevos chocolates
+    foreach($misChocolates as $chocolate){
+        $chocolateID = $chocolate['id'];
+        $cantidad = $chocolate['cantidad'];
+
+        $query = "INSERT INTO cajachocolates(id_caja,id_chocolate,cantidad) VALUES($cajaSeleccionadaID,$chocolateID,$cantidad)";
+
+        mysqli_query($db,$query);
+    }
+
+    //Mostrar la caja actualizada
+    $query = "SELECT * FROM caja WHERE id = $cajaSeleccionadaID";
+    
+    $cajaSeleccionada = mysqli_query($db, $query);
+    $cajaSeleccionada = mysqli_fetch_assoc($cajaSeleccionada);
+
+    $cajaSeleccionada['chocolates'] = $misChocolates;
+
+    echo json_encode($cajaSeleccionada, JSON_UNESCAPED_UNICODE);
 };
 
-$eliminarChocolate = function ($db, $body,$params) {
+$eliminarChocolate = function ($db, $body, $params) {
     $id = $params['id'];
 
     $chocolates = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM caja WHERE id = $id"));

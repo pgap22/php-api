@@ -45,7 +45,7 @@ function route($method, $nameRoute, $functions)
                 global $db;
 
                 //Obtener datos POST | PUT
-                $body = (array) json_decode(file_get_contents("php://input")) ?? '';
+                $body = (array) json_decode(file_get_contents("php://input"),true) ?? '';
 
                 $fun($db, $body, $URLParams);
             }
