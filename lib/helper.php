@@ -26,7 +26,7 @@ function mensaje($mensaje, $code){
 
     echo json_encode([
         "message" => $mensaje
-    ]);
+    ],JSON_UNESCAPED_UNICODE);
 
     exit();
 }

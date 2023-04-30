@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`caja` (
   `precio` FLOAT(10,2) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -40,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`chocolate` (
   `marca` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -58,14 +59,15 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`cajachocolates` (
   CONSTRAINT `fk_cajachocoaltes_chocolate`
     FOREIGN KEY (`id_chocolate`)
     REFERENCES `ecommerce`.`chocolate` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_cajachocolates_caja`
     FOREIGN KEY (`id_caja`)
     REFERENCES `ecommerce`.`caja` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 8
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -78,7 +80,9 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`usuarios` (
   `email` VARCHAR(101) NOT NULL,
   `password` VARCHAR(100) NOT NULL,
   `rol` VARCHAR(45) NOT NULL,
-  `token` VARCHAR(100) NULL,
+  `token` VARCHAR(100) NULL DEFAULT NULL,
+  `direccion` VARCHAR(110) NOT NULL,
+  `telefono` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -97,8 +101,8 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`compra` (
   CONSTRAINT `fk_comprausuario`
     FOREIGN KEY (`id_usuario`)
     REFERENCES `ecommerce`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -116,13 +120,13 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`compracaja` (
   CONSTRAINT `fk_comprarcaja_caja`
     FOREIGN KEY (`id_caja`)
     REFERENCES `ecommerce`.`caja` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_comprarcaja_compra`
     FOREIGN KEY (`id_compra`)
     REFERENCES `ecommerce`.`compra` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -140,13 +144,37 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`comprachocolates` (
   CONSTRAINT `fk_comprarchocolates_chocolates`
     FOREIGN KEY (`id_chocolate`)
     REFERENCES `ecommerce`.`chocolate` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_comprarchocolates_compra`
     FOREIGN KEY (`id_compra`)
     REFERENCES `ecommerce`.`compra` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `ecommerce`.`favoritosusuariochocolates`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ecommerce`.`favoritosusuariochocolates` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_usuario` INT(11) NOT NULL,
+  `id_chocolate` INT(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  INDEX `fk_favoritos_usuario_idx` (`id_usuario` ASC),
+  INDEX `fk_favoritos_chocolates_idx` (`id_chocolate` ASC),
+  CONSTRAINT `fk_favoritos_chocolates`
+    FOREIGN KEY (`id_chocolate`)
+    REFERENCES `ecommerce`.`chocolate` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_favoritos_usuario`
+    FOREIGN KEY (`id_usuario`)
+    REFERENCES `ecommerce`.`usuarios` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
@@ -164,33 +192,10 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`feedback` (
   CONSTRAINT `fk_feedbackusuario`
     FOREIGN KEY (`id_usuario`)
     REFERENCES `ecommerce`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
--- Table `ecommerce`.`favoritosUsuarioChocolates`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `ecommerce`.`favoritosUsuarioChocolates` (
-  `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `id_usuario` INT(11) NOT NULL,
-  `id_chocolate` INT(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `fk_favoritos_usuario_idx` (`id_usuario` ASC),
-  INDEX `fk_favoritos_chocolates_idx` (`id_chocolate` ASC),
-  CONSTRAINT `fk_favoritos_usuario`
-    FOREIGN KEY (`id_usuario`)
-    REFERENCES `ecommerce`.`usuarios` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_favoritos_chocolates`
-    FOREIGN KEY (`id_chocolate`)
-    REFERENCES `ecommerce`.`chocolate` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
