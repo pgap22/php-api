@@ -5,6 +5,9 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+-- -----------------------------------------------------
 -- Schema ecommerce
 -- -----------------------------------------------------
 
@@ -47,7 +50,6 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`caja` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -62,7 +64,6 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`chocolate` (
   `marca` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 6
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -88,7 +89,6 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`cajachocolates` (
     ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
-AUTO_INCREMENT = 8
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -98,7 +98,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `ecommerce`.`compra` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `id_usuario` INT(11) NOT NULL,
-  `fecha_compra` DATE NOT NULL,
+  `fecha_compra` DATETIME NOT NULL,
   `precio` FLOAT(10,2) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_comprausuario_idx` (`id_usuario` ASC),
@@ -118,6 +118,7 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`compracaja` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `id_compra` INT(11) NOT NULL,
   `id_caja` INT(11) NOT NULL,
+  `cantidad` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_comprarcaja_compra_idx` (`id_compra` ASC),
   INDEX `fk_comprarcaja_caja_idx` (`id_caja` ASC),
@@ -142,6 +143,7 @@ CREATE TABLE IF NOT EXISTS `ecommerce`.`comprachocolates` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `id_compra` INT(11) NOT NULL,
   `id_chocolate` INT(11) NOT NULL,
+  `cantidad` INT(11) NOT NULL,
   PRIMARY KEY (`id`),
   INDEX `fk_comprarchocolates_chocolates_idx` (`id_chocolate` ASC),
   INDEX `fk_comprarchocolates_compra_idx` (`id_compra` ASC),
