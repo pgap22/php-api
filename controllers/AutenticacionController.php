@@ -4,13 +4,13 @@
 $registrarUsuario = function($db,$body){
 
    $nombre    =  $body['nombre'] ?? '';
-   $email     =  strtolower($body['email']) ?? '';
+   $email     =  strtolower($body['email'] ?? '') ?? '';
    $telefono  =  $body['telefono'] ?? '';
    $direccion =  $body['direccion'] ?? '';
-   $token = bin2hex(random_bytes(8));
+   $token     =  bin2hex(random_bytes(8));
    $rol       =  'usuario';
 
-   $password  =  password_hash($body['password'], PASSWORD_DEFAULT);
+   $password  =  password_hash($body['password'] ?? '', PASSWORD_DEFAULT) ?? '';
 
     //Validar campos vacios
     if(empty($nombre)){

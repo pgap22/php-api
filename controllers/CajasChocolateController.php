@@ -313,4 +313,5 @@ $obtenerMisCajasChocolates = function($db,$body){
         $misCajasChocolates[] = $miCaja;
     };
 
+    echo json_encode($misCajasChocolates, JSON_UNESCAPED_UNICODE);
 };

@@ -6,13 +6,14 @@
 <?php include "./controllers/AutenticacionController.php"  ?>
 <?php include "./controllers/FeedbackController.php"  ?>
 <?php include "./controllers/FavoritosController.php"  ?>
+<?php include "./controllers/CompraController.php"  ?>
 
 
 <?php include "./middleware/autenticado.php"  ?>
 <?php include "./middleware/admin.php"  ?>
 
 <?php
-
+date_default_timezone_set('Etc/GMT+6');
 
 //Chocolates Routes
 route("GET", "/chocolates", [$obtenerChocolates]);
@@ -46,6 +47,10 @@ route("POST", "/feedback", [$autenticado, $crearFeedback]);
 route("GET", "/favoritos", [$autenticado,$obtenerChocolatesFav]);
 route("GET", "/favoritos/:id", [$autenticado,$alternarChocolateFav]);
 
+//Comprar
+route("GET", "/comprar", [$autenticado,$obtenerCompras]);
+route("POST", "/comprar", [$autenticado,$realizarComprar]);
+route("POST", "/comprar/consultar", [$consultarPrecioTotal]);
 
 $path = $_SERVER['REQUEST_URI'] ?? '';
 echo "Ruta no encontrada " . $_SERVER['REQUEST_METHOD'] . " " . $path;
