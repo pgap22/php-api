@@ -33,6 +33,7 @@ $obtenerChocolate = function ($db, $body, $params) {
         $chocolates = json_encode($chocolates, JSON_UNESCAPED_UNICODE);
         echo $chocolates;
     } else {
+        http_response_code(404);
         echo json_encode([
             "message" => "Chocolate no encontrado"
         ], JSON_UNESCAPED_UNICODE);
@@ -104,9 +105,9 @@ $eliminarChocolate = function ($db, $body, $params) {
 
     if (!empty($chocolates)) {
         mysqli_query($db, "DELETE FROM $tabla WHERE id = $id");
-        mensaje("El Chocolate ha sido eliminado correctamente",200);
+        mensaje("El Chocolate ha sido eliminado correctamente", 200);
     } else {
-        mensaje("El Chocolate no encontrado",400);
+        mensaje("El Chocolate no encontrado", 400);
     }
 };
 
@@ -126,25 +127,35 @@ $actualizandoChocolate = function ($db, $body, $params) {
     if (empty($precio)) {
         mensaje("El precio es obligatorio", 400);
     }
-    if (empty($imagen)) {
-        mensaje("La imagen es obligatoria", 400);
-    }
+
     if (empty($marca)) {
         mensaje("La marca es obligatoria", 400);
     }
 
-    //Detectar si la imagen es valida
-    if (!esImagen($imagen)) {
-        mensaje("La imagen no es valida", 400);
-    }
+    $rutaImagen = '';
+    
+    if(!empty($imagen)){
+            
+        //Detectar si la imagen es valida
+        if (!esImagen($imagen)) {
+            mensaje("La imagen no es valida", 400);
+        }
 
-    //Guardar la imagen y obtener la ruta
-    $rutaImagen = saveBase64Image($imagen); //Retorna la ruta
+        //Guardar la imagen y obtener la ruta
+        $rutaImagen = saveBase64Image($imagen); //Retorna la ruta
+    }
 
     //Crear consulta sql 
     $query = "UPDATE $tabla 
     SET nombre='$nombre', precio=$precio, imagen='$rutaImagen', marca='$marca' 
     WHERE id = $id";
+
+    if (empty($imagen)) {
+        $query = "UPDATE $tabla 
+        SET nombre='$nombre', precio=$precio, marca='$marca' 
+        WHERE id = $id";
+    }
+
 
     $result = mysqli_query($db, $query);
 
@@ -155,7 +166,7 @@ $actualizandoChocolate = function ($db, $body, $params) {
 
         $chocolate = mysqli_fetch_assoc($chocolate);
 
-        if(!$chocolate){
+        if (!$chocolate) {
             mensaje("El Chocolate no se ha encontrado", 404);
         }
 

@@ -47,6 +47,7 @@ $obtenerChocolatesFav = function ($db, $body) {
 
     //Sacar los detalles de los chocolate favs
     $misChocolatesFav = [];
+
     foreach ($chocolateFav as $chocolate) {
         $chocolateID = $chocolate['id_chocolate'];
         $query = "SELECT * FROM chocolate WHERE id = $chocolateID";

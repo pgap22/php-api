@@ -37,7 +37,7 @@ route("POST", "/cajas-chocolate", [$autenticado,$crearCajaChocolates]);
 
 route("GET", "/cajas-chocolate/:id", [$verCajaChocolate]);
 route("PUT", "/cajas-chocolate/:id", [$autenticado, $actualizarCajaChocolate]);
-route("DELETE", "/cajas-chocolate/:id", [$autenticado, $eliminarChocolate]);
+route("DELETE", "/cajas-chocolate/:id", [$autenticado, $eliminarCajaChocolate]);
 
 //Feedback
 route("GET", "/feedback", [$autenticado, $admin, $obtenerFeedback]);
