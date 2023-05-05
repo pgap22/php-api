@@ -221,6 +221,7 @@ $actualizarCajaChocolate = function ($db, $body, $params) {
         $precioChocolate = floatval($chocolate['precio']);
         $cantidadChocolate = intval($chocolate['cantidad']);
         
+        //Un mas 
         $precio += floatval($precioChocolate*$cantidadChocolate);
     }    
 
