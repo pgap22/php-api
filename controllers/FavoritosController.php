@@ -38,6 +38,9 @@ $alternarChocolateFav = function ($db, $body, $params) {
 
 $obtenerChocolatesFav = function ($db, $body) {
     //Obtener el id de usuario
+    if(empty($_REQUEST['user'])){
+        mensaje("No estas autenticado",500);    
+    }
     $usuarioID = $_REQUEST['user']['id'];
 
     //Obtener todos los favs del usuario

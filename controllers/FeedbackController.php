@@ -12,6 +12,10 @@ $obtenerFeedback = function($db,$body){
 
 $crearFeedback = function($db, $body){
     //Obtener datos de feedback
+    if(empty($_REQUEST['user'])){
+        mensaje("No estas autenticado",500);    
+    }
+
     $comentario = $body['comentario'] ?? '';
     $rating     = intval($body['rating'] ?? '');
     $usuarioID  = $_REQUEST['user']['id'];

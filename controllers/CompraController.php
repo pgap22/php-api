@@ -55,12 +55,10 @@ $realizarComprar = function ($db, $body) {
     $cajasChocolates = $body['cajas'] ?? '';
 
     //Verificar si no estan vacios
-    if (empty($chocolates)) {
-        mensaje("Los chocolates son obligatorios", 400);
+    if (empty($chocolates) && empty($cajasChocolates)) {
+        mensaje("Agrega al menos chocolates o cajas !", 400);
     }
-    if (empty($cajasChocolates)) {
-        mensaje("Las cajas son obligatorias", 400);
-    }
+ 
 
     //Obtener todos los detalles de la compra
     $compra      = obtenerPrecioTotal($chocolates, $cajasChocolates, $db);
@@ -108,12 +106,10 @@ $consultarPrecioTotal = function ($db, $body) {
     $cajasChocolates = $body['cajas'] ?? '';
 
     //Verificar si no estan vacios
-    if (empty($chocolates)) {
-        mensaje("Los chocolates son obligatorios", 400);
+    if (empty($chocolates) && empty($cajasChocolates)) {
+        mensaje("Agrega al menos chocolates o cajas !", 400);
     }
-    if (empty($cajasChocolates)) {
-        mensaje("Las cajas son obligatorias", 400);
-    }
+ 
 
     //Obtener el precio total de todos los chocolates
     $precioTotal = obtenerPrecioTotal($chocolates, $cajasChocolates, $db);
@@ -158,7 +154,7 @@ function obtenerPrecioTotal($chocolates, $cajasChocolates, $db)
         }
     }
 
-    if (empty($chocolatesDatos)) {
+    if (empty($chocolatesDatos) & !empty($chocolates)) {
         mensaje("Debes agregar almenos un chocolate valido", 400);
     }
 
@@ -194,7 +190,7 @@ function obtenerPrecioTotal($chocolates, $cajasChocolates, $db)
         }
     }
 
-    if (empty($cajasDatos)) {
+    if (empty($cajasDatos) & !empty($cajasChocolates)) {
         mensaje("Debes agregar almenos una caja valida", 400);
     }
 
