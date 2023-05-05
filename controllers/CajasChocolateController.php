@@ -237,7 +237,9 @@ $actualizarCajaChocolate = function ($db, $body, $params) {
     mysqli_query($db,$query);
     
     //Borrar los chocolates antiguos
-    $query = "DELETE FROM caja WHERE id_caja = $cajaSeleccionadaID";
+    $query = "DELETE FROM cajachocolates WHERE id_caja = $cajaSeleccionadaID";
+    mysqli_query($db,$query);
+
 
     //Insertar los nuevos chocolates
     foreach($misChocolates as $chocolate){
@@ -260,7 +262,7 @@ $actualizarCajaChocolate = function ($db, $body, $params) {
     echo json_encode($cajaSeleccionada, JSON_UNESCAPED_UNICODE);
 };
 
-$eliminarChocolate = function ($db, $body, $params) {
+$eliminarCajaChocolate = function ($db, $body, $params) {
     $id = $params['id'];
 
     $chocolates = mysqli_fetch_assoc(mysqli_query($db, "SELECT * FROM caja WHERE id = $id"));
