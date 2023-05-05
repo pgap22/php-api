@@ -130,7 +130,6 @@ $crearCajaChocolates = function ($db, $body) {
         $precioCaja += floatval($precioChocolate*$cantidadChocolate);
     }
 
-    exit();
     //Crear la caja
     $queryCrearCaja = "INSERT INTO caja(nombre,precio,id_usuario) VALUES('$nombreCaja', $precioCaja, $usuarioID)";
 
