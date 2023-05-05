@@ -108,7 +108,6 @@ $crearCajaChocolates = function ($db, $body) {
 
 
         if (!empty($chocolateObtenido) & intval($chocolate['cantidad'] !== 0)) {
-
             $misChocolates[] = [
                 ...$chocolateObtenido,
                 "cantidad" => $chocolate['cantidad'],
@@ -128,9 +127,10 @@ $crearCajaChocolates = function ($db, $body) {
         $precioChocolate = floatval($chocolate['precio']);
         $cantidadChocolate = intval($chocolate['cantidad']);
 
-        $precioCaja = floatval($precioChocolate*$cantidadChocolate);
+        $precioCaja += floatval($precioChocolate*$cantidadChocolate);
     }
 
+    exit();
     //Crear la caja
     $queryCrearCaja = "INSERT INTO caja(nombre,precio,id_usuario) VALUES('$nombreCaja', $precioCaja, $usuarioID)";
 
